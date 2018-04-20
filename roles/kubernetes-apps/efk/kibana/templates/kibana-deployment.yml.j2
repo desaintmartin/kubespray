@@ -40,6 +40,8 @@ spec:
           - name: "KIBANA_BASE_URL"
             value: "{{ kibana_base_url }}"
 {% endif %}
+          - name: "KIBANA_HOST"
+            value: "0.0.0.0"
         ports:
         - containerPort: 5601
           name: ui
