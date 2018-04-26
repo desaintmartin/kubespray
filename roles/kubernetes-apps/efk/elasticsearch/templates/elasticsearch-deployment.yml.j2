@@ -1,3 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: elasticsearch-logging-v1
+  name: elasticsearch-logging-v1
+  namespace: kube-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard
+
 ---
 # https://raw.githubusercontent.com/kubernetes/kubernetes/v1.5.2/cluster/addons/fluentd-elasticsearch/es-controller.yaml
 apiVersion: extensions/v1beta1
@@ -10,7 +25,7 @@ metadata:
     version: "{{ elasticsearch_image_tag }}"
     kubernetes.io/cluster-service: "true"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       k8s-app: elasticsearch-logging
@@ -37,6 +52,9 @@ spec:
 {% if elasticsearch_mem_requests is defined and elasticsearch_mem_requests != "0M" %}
             memory: "{{ elasticsearch_mem_requests }}"
 {% endif %}
+        env:
+            - name: ES_JAVA_OPTS
+              value: "-Xms1024m -Xmx1024m"
         ports:
         - containerPort: 9200
           name: db
@@ -46,11 +64,12 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: es-persistent-storage
-          mountPath: /data
+          mountPath: /usr/share/elasticsearch/data
       volumes:
       - name: es-persistent-storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: elasticsearch-logging-v1
 {% if rbac_enabled %}
-      serviceAccountName: efk 
+      serviceAccountName: efk
 {% endif %}
 
