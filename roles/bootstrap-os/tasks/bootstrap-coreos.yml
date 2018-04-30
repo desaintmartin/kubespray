@@ -51,4 +51,5 @@
 - name: Install required python modules
   pip:
     name: "{{ item }}"
+    executable: /opt/bin/pip
   with_items: "{{pip_python_coreos_modules}}"
