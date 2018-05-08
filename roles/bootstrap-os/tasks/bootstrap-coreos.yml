@@ -7,12 +7,18 @@
   tags:
     - facts
 
+- name: Force binaries directory for Container Linux by CoreOS
+  set_fact:
+    bin_dir: "/opt/bin"
+  tags:
+    - facts
+
 - name: Bootstrap | Run bootstrap.sh
   script: bootstrap.sh
   when: need_bootstrap.rc != 0
 
 - set_fact:
-    ansible_python_interpreter: "/opt/bin/python"
+    ansible_python_interpreter: "{{ bin_dir }}/python"
   tags:
     - facts
 
@@ -44,11 +50,14 @@
 - name: Bootstrap | Install pip launcher
   copy:
     src: runner
-    dest: /opt/bin/pip
+    dest: "{{ bin_dir }}/pip"
     mode: 0755
   when: need_pip.rc != 0
 
 - name: Install required python modules
   pip:
     name: "{{ item }}"
+    executable: pip
   with_items: "{{pip_python_coreos_modules}}"
+  environment:
+    PATH: "{{ bin_dir }}"
