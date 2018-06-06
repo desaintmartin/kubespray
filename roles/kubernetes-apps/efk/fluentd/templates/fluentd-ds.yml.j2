@@ -31,6 +31,8 @@ spec:
 {% if rbac_enabled %}
       serviceAccountName: efk
 {% endif %}
+      tolerations:
+        - operator: Exists
       containers:
       - name: fluentd-es
         image: "{{ fluentd_image_repo }}:{{ fluentd_image_tag }}"
