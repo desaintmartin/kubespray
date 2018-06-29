@@ -47,13 +47,10 @@ spec:
           name: transport
           protocol: TCP
         volumeMounts:
-        - name: es-persistent-storage
+        - name: persistent-storage
           mountPath: /data
-      volumes:
-      - name: es-persistent-storage
-        emptyDir: {}
 {% if rbac_enabled %}
-      serviceAccountName: efk 
+      serviceAccountName: efk
 {% endif %}
       initContainers:
       - image: alpine:3.6
@@ -61,4 +58,11 @@ spec:
         name: elasticsearch-logging-init
         securityContext:
           privileged: true
-
+  volumeClaimTemplates:
+  - metadata:
+      name: persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 300Gi
