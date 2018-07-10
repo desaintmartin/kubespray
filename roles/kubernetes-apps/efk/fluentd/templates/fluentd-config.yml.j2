@@ -117,7 +117,6 @@ data:
       @type tail
       path /var/log/containers/*.log
       pos_file /var/log/es-containers.log.pos
-      time_format %Y-%m-%dT%H:%M:%S.%NZ
       tag raw.kubernetes.*
       read_from_head true
       <parse>
@@ -415,6 +414,47 @@ data:
     # Enriches records with Kubernetes metadata
     <filter kubernetes.**>
       @type kubernetes_metadata
+    </filter>
+
+    <filter kubernetes.var.log.containers.**celery**.log>
+      @type parser
+      key_name log
+      reserve_time true
+      reserve_data true
+      remove_key_name_field true
+      hash_value_field wiremind
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+        </pattern>
+        <pattern>
+          format nginx
+        </pattern>
+        <pattern>
+          format none
+        </pattern>
+      </parse>
+    </filter>
+    <filter kubernetes.var.log.containers.**uwsgi**.log>
+      @type parser
+      key_name log
+      reserve_time true
+      reserve_data true
+      remove_key_name_field true
+      hash_value_field wiremind
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+        </pattern>
+        <pattern>
+          format nginx
+        </pattern>
+        <pattern>
+          format none
+        </pattern>
+      </parse>
     </filter>
 
     <match **>
