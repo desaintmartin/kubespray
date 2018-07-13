@@ -58,6 +58,14 @@ spec:
         name: elasticsearch-logging-init
         securityContext:
           privileged: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  k8s-app: elasticsearch-logging
+                  version: "{{ elasticsearch_image_tag }}"
+              topologyKey: kubernetes.io/hostname
   volumeClaimTemplates:
   - metadata:
       name: persistent-storage
