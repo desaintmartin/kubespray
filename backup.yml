@@ -1,0 +1,10 @@
+- hosts: etcd
+  any_errors_fatal: "{{ any_errors_fatal | default(true) }}"
+  roles:
+    - { role: kubespray-defaults}
+    - { role: etcd}
+  tasks:
+      - name: "Backup etcd data"
+        notify: "Backup etcd data"
+        command: /bin/true
+
