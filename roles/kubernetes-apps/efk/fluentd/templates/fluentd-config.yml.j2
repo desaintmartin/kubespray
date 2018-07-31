@@ -22,8 +22,8 @@ data:
     # directory should be mounted in the container.
     #
     # These logs are then submitted to Elasticsearch which assumes the
-    # installation of the fluent-plugin-elasticsearch & the
-    # fluent-plugin-kubernetes_metadata_filter plugins.
+    # installation of the fluent-plugin-elasticsearch, the
+    # fluent-plugin-kubernetes_metadata_filter & the fluent-plugin-concat plugins.
     # See https://github.com/uken/fluent-plugin-elasticsearch &
     # https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter for
     # more information about the plugins.
@@ -133,6 +133,16 @@ data:
         </pattern>
       </parse>
     </source>
+
+    # Docker splits log lines at 16KB starting from 1.13
+    # See https://github.com/moby/moby/issues/34855
+    <filter kubernetes.**>
+      @type concat
+      key log
+      stream_identity_key container_id
+      multiline_start_regexp /^-e:2:in `\/'/
+      multiline_end_regexp /^-e:4:in/
+    </filter>
 
     # Detect exceptions in the log output and forward them as one log entry.
     <match raw.kubernetes.**>
