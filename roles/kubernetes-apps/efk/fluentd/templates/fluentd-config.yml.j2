@@ -416,6 +416,14 @@ data:
       @type kubernetes_metadata
     </filter>
 
+    # Concatenate multi-line logs (>=16KB)
+    <filter **>
+      @type concat
+      key message
+      multiline_end_regexp /\n$/
+      separator ""
+    </filter>
+
     <filter kubernetes.var.log.containers.**celery**.log>
       @type parser
       key_name log
