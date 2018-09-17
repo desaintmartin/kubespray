@@ -27,6 +27,9 @@ spec:
       containers:
       - image: "{{ elasticsearch_image_repo }}:{{ elasticsearch_image_tag }}"
         name: elasticsearch-logging
+          env:
+          - name: ES_JAVA_OPTS
+            value: "-Xms3g -Xmx3g"
         resources:
           # need more cpu upon initialization, therefore burstable class
           limits:
