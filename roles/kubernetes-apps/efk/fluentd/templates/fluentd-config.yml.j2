@@ -416,14 +416,24 @@ data:
       @type kubernetes_metadata
     </filter>
 
+    # Drop calico logs
+    <filter kubernetes.var.log.containers.**calico**.log>
+      @type grep
+      <exclude>
+        key log
+        pattern INFO
+      </exclude>
+    </filter>
+
     # Concatenate multi-line logs (>=16KB)
     <filter **>
       @type concat
-      key message
+      key log
       multiline_end_regexp /\n$/
       separator ""
     </filter>
 
+    # To be deleted when all wiremind projects use logFormat label
     <filter kubernetes.var.log.containers.**celery**.log>
       @type parser
       key_name log
@@ -464,6 +474,53 @@ data:
         </pattern>
       </parse>
     </filter>
+    <filter kubernetes.var.log.containers.**chartreuse**.log>
+      @type parser
+      key_name log
+      reserve_time true
+      reserve_data true
+      remove_key_name_field true
+      hash_value_field wiremind
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+        </pattern>
+        <pattern>
+          format nginx
+        </pattern>
+        <pattern>
+          format none
+        </pattern>
+      </parse>
+    </filter>
+    #<filter kubernetes.var.log.containers.**wiremind**>
+    #  @type grep
+    #  <regexp>
+    #    key kubernetes.labels.chart.logFormat
+    #    pattern json
+    #  </regexp>
+    #</filter>
+    #<filter kubernetes.var.log.containers.**wiremind**>
+    #  @type parser
+    #  key_name log
+    #  reserve_time true
+    #  reserve_data true
+    #  remove_key_name_field true
+    #  hash_value_field wiremind
+    #  <parse>
+    #    @type multi_format
+    #    <pattern>
+    #      format json
+    #    </pattern>
+    #    <pattern>
+    #      format nginx
+    #    </pattern>
+    #    <pattern>
+    #      format none
+    #    </pattern>
+    #  </parse>
+    #</filter>
 
     <match **>
       @id elasticsearch
