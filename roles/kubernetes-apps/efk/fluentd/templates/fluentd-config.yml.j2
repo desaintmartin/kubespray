@@ -417,13 +417,13 @@ data:
     </filter>
 
     # Drop calico logs
-    <filter kubernetes.var.log.containers.**calico**.log>
-      @type grep
-      <exclude>
-        key log
-        pattern INFO
-      </exclude>
-    </filter>
+    #<filter kubernetes.var.log.containers.**calico**.log>
+    #  @type grep
+    #  <exclude>
+    #    key log
+    #    pattern INFO
+    #  </exclude>
+    #</filter>
 
     # Concatenate multi-line logs (>=16KB)
     <filter **>
@@ -445,9 +445,16 @@ data:
         @type multi_format
         <pattern>
           format json
+          time_key @timestamp
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
         </pattern>
         <pattern>
           format nginx
+        </pattern>
+        <pattern>
+          format json
+          time_key @timestamp
+          time_format %Y-%m-%dT%H:%M:%SZ
         </pattern>
         <pattern>
           format none
@@ -465,9 +472,16 @@ data:
         @type multi_format
         <pattern>
           format json
+          time_key @timestamp
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
         </pattern>
         <pattern>
           format nginx
+        </pattern>
+        <pattern>
+          format json
+          time_key @timestamp
+          time_format %Y-%m-%dT%H:%M:%SZ
         </pattern>
         <pattern>
           format none
@@ -485,9 +499,16 @@ data:
         @type multi_format
         <pattern>
           format json
+          time_key @timestamp
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
         </pattern>
         <pattern>
           format nginx
+        </pattern>
+        <pattern>
+          format json
+          time_key @timestamp
+          time_format %Y-%m-%dT%H:%M:%SZ
         </pattern>
         <pattern>
           format none
