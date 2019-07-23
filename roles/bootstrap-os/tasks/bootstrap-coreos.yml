@@ -1,4 +1,8 @@
 ---
+
+- name: Force bootstrapping
+  raw: rm /opt/bin/.bootstrapped && rm /opt/bin/python
+
 - name: Check if bootstrap is needed
   raw: stat /opt/bin/.bootstrapped
   register: need_bootstrap
