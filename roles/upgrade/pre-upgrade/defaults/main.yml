@@ -2,4 +2,5 @@
 drain_grace_period: 300
 drain_timeout: 360s
 drain_pod_selector: ""
-drain_nodes: true
+# Forced to false, we don't need draining while upgrading
+drain_nodes: false
