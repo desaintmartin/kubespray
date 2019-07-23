@@ -22,12 +22,8 @@
   changed_when: false
 
 - set_fact:
-    needs_cordoning: >-
-      {% if kubectl_node_ready.stdout == "True" and kubectl_node_schedulable.stdout == "" -%}
-      true
-      {%- else -%}
-      false
-      {%- endif %}
+    # Forced to false, we don't need cordoning while upgrading
+    needs_cordoning: false
 
 - name: Cordon node
   command: "{{ bin_dir }}/kubectl cordon {{ inventory_hostname }}"
