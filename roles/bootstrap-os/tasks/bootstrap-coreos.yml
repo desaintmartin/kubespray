@@ -1,7 +1,7 @@
 ---
 
 - name: Check if bootstrap is needed
-  raw: stat /opt/bin/.bootstrapped
+  raw: stat /opt/bin/.bootstrapped-nonexist
   register: need_bootstrap
   environment: {}
   failed_when: false
